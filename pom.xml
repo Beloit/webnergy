@@ -5,7 +5,7 @@
     <groupId>com.webofthings</groupId>
     <artifactId>WebPlogg</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1-alpha-SNAPSHOT</version>
+    <version>0.0.2-alpha-SNAPSHOT</version>
     <name>WebPlogg</name>
     <url>http://maven.apache.org</url>
     <profiles>

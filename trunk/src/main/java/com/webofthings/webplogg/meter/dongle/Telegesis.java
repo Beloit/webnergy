@@ -63,7 +63,7 @@ public class Telegesis implements SerialPortEventListener {
 				serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8,
 						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
-				InputStream in = serialPort.getInputStream();
+				inputStream = serialPort.getInputStream();
 				outputStream = serialPort.getOutputStream();
 
 				//(new Thread(new SerialReader(in, ploggs))).start();

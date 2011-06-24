@@ -26,7 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
  * This is the Smart Meter resource which is the first application related
@@ -64,7 +63,7 @@ public class SmartMeterResource {
             URI uri = clone.build(currentSmartMeter.getId());
 
             htmlOut.append("<p>Name: " + currentSmartMeter.getName() + "</br>");
-            htmlOut.append("ID: " + "<a href=\"");
+            htmlOut.append("ID: " + "<a href=\"smartmeters/");
             htmlOut.append(uri.toString());
             htmlOut.append("\">" + currentSmartMeter.getId() + "</a>");
             htmlOut.append("</p>");
@@ -126,7 +125,6 @@ public class SmartMeterResource {
     @Produces(MediaType.TEXT_HTML)
     public String getMeterStatusHTML(@PathParam("smartMeterId") String smartMeterId) {
         StringBuilder htmlOut = new StringBuilder("<html><body>");
-        ConsumptionData cons = ploggMgr.getDataFromMeter(smartMeterId);
 
         /* Build URLs to child-resources (SmartMeter) */
         UriBuilder builder = UriBuilder.fromPath("../");
@@ -191,17 +189,4 @@ public class SmartMeterResource {
 
         }
     }
-    //    @GET
-//    public PloggMeterData getPloggs() {
-//        PloggMeterData meteredData = new PloggMeterData("~~Live Meter results are:~~~~Time entry               = 2010 MAY 30 19:08:01 ~~Watts (-Gen +Con)        = 2.60 W ~~Cumulative Watts (Gen)   = 0.000 kWh ~~Cumulative Watts (Con)   = 53.903 kWh ~~Frequency                = 50.0 Hz ~~RMS Voltage              = 230.5 V ~~RMS Current              = 0.021 A ~~Plogg on time            = 11 days 12:19:43 ~~Reactive Power (-G/+C)   = -4.26 VAR ~~Acc Reactive Pwr (Gen)   = 57.171 KVARh ~~Acc Reactive Pwr (Con)   = 0.000 KVARh ~~Phase Angle (V/I)        = 297 Degrees ~~Equipment on time        = 11 days 12:19:44 ~~~~>");
-//        return meteredData;
-//    }
-
-    /* testing method, returns what a Plogg would return */
-//    @Path("/{smartMeterId}")
-//    @GET
-//    public ConsumptionData getMeterData(@PathParam("smartMeterId") String smartMeterId) {
-//        PloggMeterData meteredData = new PloggMeterData("~~Live Meter results are:~~~~Time entry               = 2010 MAY 30 19:08:01 ~~Watts (-Gen +Con)        = 2.60 W ~~Cumulative Watts (Gen)   = 0.000 kWh ~~Cumulative Watts (Con)   = 53.903 kWh ~~Frequency                = 50.0 Hz ~~RMS Voltage              = 230.5 V ~~RMS Current              = 0.021 A ~~Plogg on time            = 11 days 12:19:43 ~~Reactive Power (-G/+C)   = -4.26 VAR ~~Acc Reactive Pwr (Gen)   = 57.171 KVARh ~~Acc Reactive Pwr (Con)   = 0.000 KVARh ~~Phase Angle (V/I)        = 297 Degrees ~~Equipment on time        = 11 days 12:19:44 ~~~~>");
-//        return meteredData;
-//    }
 }

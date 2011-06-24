@@ -167,7 +167,7 @@ public class Command {
 	 * @return the command
 	 */
 	public String setChannelMask() {
-		return "ATS01=0001\r";
+		return "ATS00=0001\r";
 	}
 
 	/**

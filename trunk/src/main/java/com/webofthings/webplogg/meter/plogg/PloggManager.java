@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -37,7 +36,6 @@ public class PloggManager extends SmartMeterManager implements Runnable {
 	static LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<Object>(
 			10);
 	private static String MY_TYPE = "Plogg";
-	String portName = "/dev/ttyUSB0";
 	Command comm = new Command();
 	Telegesis tele;
 	PloggMeterData meteredData = new PloggMeterData();
@@ -57,13 +55,11 @@ public class PloggManager extends SmartMeterManager implements Runnable {
 	 */
 	private PloggManager(String portName) {
 		try {
-			this.portName = portName;
 			tele = new Telegesis(portName, queue);
 			tariffCosts = new TariffCosts(comm, tele, queue);
 			maxValues = new MaxValues(comm, tele, queue);
 			loggedValues = new LoggedValues(comm, tele, queue);
 			timer = new Timer(comm, tele, queue);
-			//tele.connection();
 			tele.connect();
 			syncInterval = Integer.parseInt(Configurator.getInstance().getProperty("PLOGG_SYNC_INTERVAL"));
 		} catch (Exception ex) {
@@ -84,49 +80,9 @@ public class PloggManager extends SmartMeterManager implements Runnable {
 		String result = getResult();
 		result = getParsingResult(result, ploggID);
 		ConsumptionData meteredDataFull = new PloggMeterData(result);
+		final String msg = "Received plogg information from plogg " + ploggID + "; Power consumption: " + meteredDataFull.getWatt();
+		Logger.getLogger(PloggManager.class.getName()).log(Level.INFO, msg);
 		return meteredDataFull;
-	}
-
-	/**
-	 * get the plogg metered data
-	 *
-	 * @param ploggID
-	 *            the ID of the plogg
-	 * @return the string contain the metered data of the plogg
-	 */
-	public synchronized String ploggInfoAsString(String ploggID) {
-		tele.write(comm.info(ploggID));
-		tele.read(false);
-		String result = getResult();
-		result = getParsingResult(result, ploggID);
-		PloggMeterData meteredDataFull = new PloggMeterData(result);
-		String ploggInfo = "";
-		ploggInfo = ploggInfo + "Watt: " + meteredDataFull.getWatt() + "\r\n";
-		ploggInfo = ploggInfo + "Cumulative Watt (Gen): "
-		+ meteredDataFull.getCumulativeWattGenerated() + "\r\n";
-		ploggInfo = ploggInfo + "Cumulative Watt (Con): "
-		+ meteredDataFull.getCumulativeWattConsumed() + "\r\n";
-		ploggInfo = ploggInfo + "Date and Time: "
-		+ meteredDataFull.getDateTime() + "\r\n";
-		ploggInfo = ploggInfo + "Frequency: " + meteredDataFull.getFrequency()
-		+ "\r\n";
-		ploggInfo = ploggInfo + "RMS Voltage: "
-		+ meteredDataFull.getRMSVoltage() + "\r\n";
-		ploggInfo = ploggInfo + "RMS Current: "
-		+ meteredDataFull.getRMSCurrent() + "\r\n";
-		ploggInfo = ploggInfo + "Plogg On Time: "
-		+ meteredDataFull.getUpTime() + "\r\n";
-		ploggInfo = ploggInfo + "Reactive Power: "
-		+ meteredDataFull.getReactivePower() + "\r\n";
-		ploggInfo = ploggInfo + "AccReactivePwr (Con): "
-		+ meteredDataFull.getAccReactivePowerConsumed() + "\r\n";
-		ploggInfo = ploggInfo + "AccReactivePwr (Gen): "
-		+ meteredDataFull.getAccReactivePowerGenerated() + "\r\n";
-		ploggInfo = ploggInfo + "Phase Angle: "
-		+ meteredDataFull.getPhaseAngle() + "\r\n";
-		ploggInfo = ploggInfo + "Equipment On Time: "
-		+ meteredDataFull.getEquipmentOnTime() + "\r\n";
-		return ploggInfo;
 	}
 
 	/**
@@ -189,17 +145,6 @@ public class PloggManager extends SmartMeterManager implements Runnable {
 		tele.read(true);
 		tele.write(comm.getNetworkInfo());
 		tele.read(true);
-		//        tele.write(comm.scan());
-		//        tele.read(true);
-
-		//                tele.write(comm.setPANID());
-		//        tele.read(true);
-		//        tele.write(comm.setChannelMask());
-		//        tele.read(true);
-		//        tele.write(comm.establishPAN());
-		//        tele.read(true);
-		//        tele.write(comm.scan());
-		//        tele.read(true);
 	}
 
 	/**
@@ -804,8 +749,6 @@ public class PloggManager extends SmartMeterManager implements Runnable {
 			super.addSmartMeter(new SmartMeter(currentId, MY_TYPE, name, status));
 		}
 
-		//        super.addSmartMeter(new SmartMeter("00041434545", "type", "MyPlogg", true));
-		//        super.addSmartMeter(new SmartMeter("00041436777", "type", "MyPlogg", true));
 	}
 
 	@Override
@@ -853,4 +796,3 @@ public class PloggManager extends SmartMeterManager implements Runnable {
 
 	}
 }
-

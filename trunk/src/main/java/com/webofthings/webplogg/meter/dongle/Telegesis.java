@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import gnu.io.*;
-//import javax.comm.*;
 
 /**
  * This is the Telegesis class, it provides the methods to connect and
@@ -66,12 +65,7 @@ public class Telegesis implements SerialPortEventListener {
 				inputStream = serialPort.getInputStream();
 				outputStream = serialPort.getOutputStream();
 
-				//(new Thread(new SerialReader(in, ploggs))).start();
-				// (new Thread(new SerialWriter(out))).start();
-
 				outputStream.write("ATI\r\n".getBytes());
-
-				//getConnectedPloggs();
 
 			}
 		}
